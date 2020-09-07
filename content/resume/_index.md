@@ -6,8 +6,8 @@ path = "cv"
 date = 2020-09-7
 +++
 
-# CV
+# Resume
 
-[Here is my CV](cv.pdf).
+[Here is my resume](resume.pdf).
 
 If you are interested in hiring me, please [contact me](@/contact/_index.md).

@@ -1,5 +1,7 @@
 title = "Liam Woodward"
 base_url = "https://alidiusk.github.io/"
+# for testing purposes
+# base_url = "127.0.0.1"
 description = "Liam Woodward Personal Website"
 
 compile_sass = true

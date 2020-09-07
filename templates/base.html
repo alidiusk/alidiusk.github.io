@@ -17,9 +17,9 @@
         <div id="site-container">
             <header id="site-header">
                 <nav id="site-nav">
-                    <a href="{{ config.base_url }}/about" class="{% if not page.path %}active{% endif %}">Home</a>
+                    <a href="{{ config.base_url }}" class="{% if not page.path %}active{% endif %}">Home</a>
                     <a href="{{ config.base_url }}/projects" class="{% if page %}{% if page.path == "&#x2F;projects" %}active{% endif %}{% endif %}">Projects</a>
-                    <a href="{{ config.base_url }}/about" class="{% if not page.path %}active{% endif %}">About</a>
+                    <a href="{{ config.base_url }}/cv" class="{% if not page.path %}active{% endif %}">CV</a>
                     <a href="{{ config.base_url }}/contact" class="{% if page %}{% if page.path == "&#x2F;contact" %}active{% endif %}{% endif %}">Contact</a>
                 </nav>
             </header>

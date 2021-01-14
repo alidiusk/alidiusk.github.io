@@ -1,2 +1,2 @@
-[submodule "https://github.com/RatanShreshtha/DeepThought"]
-	url = themes/DeepThought/
+[submodule "themes/DeepThought"]
+	url = https://github.com/RatanShreshtha/DeepThought

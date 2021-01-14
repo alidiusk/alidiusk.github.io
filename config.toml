@@ -1,16 +1,46 @@
-title = "Liam Woodward"
+title = "Alidiusk"
 base_url = "https://alidiusk.github.io/"
-# for testing purposes
 # base_url = "127.0.0.1"
-description = "Liam Woodward Personal Website"
+description = "Liam Woodward's personal website and blog"
+
+generate_feed = true
+feed_filename = "rss.xml"
+taxonomies = [
+    { name = "categories", feed = true, paginate_by = 10 },
+    { name = "tags", feed = true, paginate_by = 10 },
+]
+
+ignored_content = []
 
 compile_sass = true
-highlight_code = true
-hightlight_theme = "gruvbox"
 
-build_search_index = false
+build_search_index = true
 
 default_language = "en"
 
+theme = "DeepThought"
+
+[markdown]
+highlight_code = true
+
+[slugify]
+paths = "on"
+taxonomies = "on"
+anchors = "on"
+
 [extra]
-author = { name = "Liam Woodward", email = "liamowoodward@gmail.com" }
+navbar_items = [
+    { url = "$BASE_URL/", name = "Home" },
+    { url = "$BASE_URL/posts", name = "Posts" },
+    { url = "$BASE_URL/tags", name = "Tags" },
+    { url = "$BASE_URL/categories", name = "Categories" },
+    { url = "$BASE_URL/contact", name = "Contact" },
+]
+
+[extra.author]
+name = "Liam Woodward"
+email = "liamowoodward@gmail.com"
+
+[extra.social]
+github = "alidiusk"
+linkedin = "alidiusk"

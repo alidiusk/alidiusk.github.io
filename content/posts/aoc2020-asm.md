@@ -9,7 +9,7 @@ tags = ["assembly", "linux", "aoc"]
 
 I think the Advent of Code challenges are a wonderful opportunity to experiment with new programming languages.
 As I have been trying to learn more about operating systems and the low level operations of computers, I thought
-it would be an interesting exercise to try to complete some of the Advent of Code 2020 challenges in x86-64bit
+it would be an interesting exercise to try to complete some of the Advent of Code 2020 challenges in x86-64
 assembly on Linux.
 
 <!-- more -->
@@ -20,9 +20,9 @@ I will be going through my assembly solution to the Advent of Code 2020 Day 01 c
 Along the way, I will attempt to explain what assembly is, why it is important, and how the code works.
 
 I expect that you will already have some experience with programming. This doesn't have to be low level
-programming, or assembly, or anything like that, but that would help tremendously. If you have a decent
-amount of experience in programming languages such as Python or Javascript, you may have to go slowly
-and Google some things, but you should be able to follow along.
+programming or assembly or anything like that, although that would help tremendously. If you have a decent
+amount of experience in programming languages such as Python or Javascript, you may have to follow along
+slowly, but you should hopefully be able to understand the code.
 
 If you would like to follow along with me, you will need
 * the [nasm](https://www.nasm.us/) x86 assembler
@@ -30,6 +30,25 @@ If you would like to follow along with me, you will need
 * the [make](https://www.gnu.org/software/make/manual/make.html) build tool
 
 I leave the installation of these tools to you.
+
+## GDB
+
+While optional, I would recommend you also install the `gdb` debugger. This was invaluable to me when
+writing this post, as my code would frequently crash or justs not work. Using `gdb` is outside
+the scope of this post, but there are plenty of guides online. If you do decide to use `gdb`, I would
+recommending using `layout asm`, `layout regs`, and `set disassembly-flavor intel`; this will display
+the register values and assembly code in Intel syntax in separate windows. You may find it annoying
+to type these commands in at the start of every debugging session, in which case you can copy
+the following into `.gdbinit` in your home directory:
+
+```gdb
+set auto-load safe-path /
+
+set disassembly-flavor intel
+
+layout regs
+layout asm
+```
 
 # Introduction
 
@@ -40,24 +59,24 @@ basic arithmetic, move data into registers, etc.
 While programmers did write raw machine code in some of the earliest days in computing, almost no one
 writes raw machine code today. Machine code is incredibly difficult for humans to read, write, and understand
 because it is merely a sequence of numbers encoded in binary that is sent to the CPU. Imagine encoding the
-English alphabet with the numbers 1-26, and trying to write a paper using those numbers in place of letters.
+English alphabet with the numbers 1-26 and trying to write a paper using those numbers in place of letters.
 While it is possible, it would take an exorbitant amount of time and likely be fraught with errors.
 
-These early computer scientists soon developed **assembly** as an abstraction on top of machine code. Instead
+These early computer scientists soon developed *assembly* as an abstraction on top of machine code. Instead
 of writing the sequence of numbers that would encode machine code instructions, code would be written with
 text that humans could better read and understand. Each line would encode one instruction and any arguments
 that instruction would accept. Labels were also added so that code could refer to certain parts of the program
 in a simple way, allowing programmers to more easily implement loops, functions, conditional statements, etc.
 
 However, assembly cannot be executed by the CPU -- the CPU can only execute machine code. Thus, assembly must
-be *assembled* into machine code by an assembler. An assembler is essentially a compiler from assembly to machine code.
-This machine code can then be sent to the CPU and executed.
+be *assembled* into machine code by an assembler. An assembler is essentially a compiler from assembly to
+machine code. This machine code can then be sent to the CPU and executed.
 
-As assembly is only a light abstraction over machine code, it is highly processor-specific and low level. That means
-that assembly code must take certain features of the CPU into account to work properly (or at all), such as
-the architecture, registers, addressing modes, data types, and more.
+As assembly is only a light abstraction over machine code, it is highly processor-specific and low level.
+That means that assembly code must take certain features of the CPU into account to work properly,
+such as the architecture, registers, addressing modes, data types, and more.
 
-We will be writing code for the x86 architecture, targeting CPUs with 64bit registers. This is usually succinctly
+We will be writing code for the x86 architecture, targeting CPUs with 64 bit registers. This is usually succinctly
 described as x86-64 assembly code.
 
 Furthermore, as we are not writing assembly for a bare metal application, we rely on interfacing with the operating
@@ -75,30 +94,34 @@ Much of assembly code performs operations with registers. Registers are small me
 store the data that the CPU performs operations on. For instance, when performing an add operation, one of the
 operands must be CPU register that the CPU will save the final sum to.
 
-CPU registers are typically either 8bit, 16bit, 32bit, or 64bit. Most modern desktop processors today are 64bit,
-and as stated before, we are writing 64bit assembly code.
+CPU registers are typically either 8 bit, 16 bit, 32 bit, or 64 bit. Most modern desktop processors today are 64 bit,
+and as stated before, we are writing 64 bit assembly code.
 
-These registers are all referred to with special -- and somewhat confusing -- names in assembly code.
+These registers are all referred to with special, and somewhat confusing, names in assembly code.
 
 The table [here](https://www.cs.uaf.edu/2017/fall/cs301/lecture/09_11_registers.html) lists all of the
-x86-64bit registers.
+x86-64 registers.
 
-Note that although these registers are 64bit, you can specifically access smaller portions of the registers.
-For instance, the lower 32bit half of the `rax` register is `eax`; the lowest 16bit fourth is `ax`;
-the top 8bit half of `ax` is `ah`, and the low 8bit half of `ax` is `al`. The table linked above also lists
-the names of all of these subparts of each 64bit register.
+Note that although these registers are 64 bit, you can specifically access smaller portions of the registers.
+For example, here are all of the subparts of the 64 bit `rax` register:
+* `rax` : the full 64 bit register
+* `eax` : the lower 32 bits of `rax`
+* `ax` : the lowest 16 bits of `rax`
+* `ah` : the upper 8 bits of `ax`
+* `al` : the lower 8 bits of `ax` / the lowest 8 bits of `rax`
+You can find all of these names, as well as the names of the other registers, in the link above.
 
-Note that you cannot access the high 32bits of `rax` directly, nor the high 16bits of `eax`.
-You can do this with bit operations, but you cannot access them directly.
+Note that you cannot access the highest 32 bits of `rax` nor the highest 16 bits of `eax` directly.
+You can compute their values using bit operations, but their values cannot be accessed directly.
 
 We can move data into registers with the `mov` class of instructions.
 
 ```nasm
 mov rax, 0xdeadbeef ; move the number 0xdeadbeef into rax
-mov eax, 42         ; move the number 42 into eax, the lower 32bits of rax
-mov ax, 0xff        ; move the number 0xff into ax, the lowest 16bits of rax
-mov ah, 0xf         ; move the number 0xf into ah, the high 8bits of ax
-mov al, 0xa         ; move the number 0xa into al, the low 8bits of ax
+mov eax, 42         ; move the number 42 into eax, the lower 32 bits of rax
+mov ax, 0xff        ; move the number 0xff into ax, the lowest 16 bits of rax
+mov ah, 0xf         ; move the number 0xf into ah, the high 8 bits of ax
+mov al, 0xa         ; move the number 0xa into al, the low 8 bits of ax
 ```
 
 ## Instructions
@@ -116,8 +139,8 @@ code number of the `mov` instruction is different on each line. Thus, each form 
 is encoded by a different number in machine code.
 
 We do not have to worry too much about the different forms of instructions and their machine
-code numbers normally, thankfully. You just have to know that there are many instructions and each
-instruction can take none, one, or more operands.
+code numbers to write simple assembly code, thankfully. Just be aware that there are many assembly
+instructions and each instruction can take none, one, or more operands.
 
 The `mov` instruction discussed above, generally, moves data from a source to a destination of equal
 size in the form `mov [dest] [src]`.
@@ -132,11 +155,11 @@ very common and looks fairly similar to NASM syntax. AT&T syntax is very common 
 it looks very different from NASM syntax and personally, I find it to be very noisy and difficult
 to read.
 
-Most written assembly nowadays seems to use NASM syntax and the NASM assembler, as we are using.
+Most handwritten assembly nowadays seems to use NASM syntax and the NASM assembler, as we are using.
 
 ### More Instructions
 
-Now that we know what an instruction is, let us look at some useful assembly instructions
+Now that we know what an instruction is, let us look at some common and useful assembly instructions
 that we will make use of:
 * `mov [dest] [src]` : move data from the source to the destination
 * `lea [dest] [mem]` : loads a memory address into the destination register
@@ -144,8 +167,8 @@ that we will make use of:
 * `add [dest] [src]` : add the number, register, or number in memory to the destination register
 * `sub [dest] [src]` : subtract the number, register, or number in memory from the destination register
 * `imul [src]` : do a signed multiplication between `rax` and the `src` register.
-    * Note that there are other forms of `imul` for smaller register sizes; if you use a 32bit,
-        16bit, or 8bit register as the `src`, then the corresponding size of the `rax` register
+    * Note that there are other forms of `imul` for smaller register sizes; if you use a 32 bit,
+        16 bit, or 8 bit register as the `src`, then the corresponding size of the `rax` register
         will be used in the signed multiplication
 * `mul [src]` : do an unsigned multiplication between `rax` and the `src` register
     * The size correspondence as explained right above also applies here
@@ -164,7 +187,7 @@ that we will make use of:
 ### Flags
 
 When you perform some operations, such as a `cmp` operation, the CPU will set some flags for you.
-These flags cannot be read or written to directly, but can be used for control flow with some
+These flags cannot be read or written to directly, but are instead used for control flow with some
 instructions. For instance, most languages have an `if` statement to select between two
 code branches to execute depending on some condition. The following Python code,
 
@@ -202,21 +225,25 @@ jump-family instruction corresponds to the comparison you want to make. That is,
 * `jge` corresponds to `>=`
 * `je` corresponds to `==`
 * `jne` corresponds to `!=`
-Thus, using the `cmp` and `jmp` instructions, you can implement conditional control flow to jump to
-different code branches depending on the value of some register.
+Thus, using the `cmp` instruction and the jump-family of instructions, you can implement
+conditional control flow to jump to different code branches depending on the value of some
+register.
+
+There are other jump instructions you can use as well as other instructions that set flags, but
+this subset suffices for our purposes today.
 
 ### Syscalls
 
 I mentioned before that to perform many common operations, such as opening, reading from,
 writing to, and closing files, we will have to interface with the operating system. This is
-because the operation manages all of the hardware in a computer, including storage, and thus
+because the operating system manages all of the hardware in a computer, including storage, and thus
 the operating system manages the filesystem. Thus, if we want to interact with files, we must
 work with the operating system. Whenever you open a file in a higher level language, it is
 ultimately interfacing with the operating system in this way.
 
-As we are working with Linux in our code, we will use the *syscall* interface. This is
+As we are working with Linux in our code, we will use the *system call* interface. This is
 ultimately rather simmple. We will just have to move some data into specific registers
-to tell the *Linux kernel* what operation we want to perform, as well as supply data
+to tell the Linux kernel what operation we want to perform, as well as supply data
 to perform that operation, and then we use the `syscall` instruction.
 
 Each syscall has a corresponding number. The ones that we will use are:
@@ -238,21 +265,21 @@ memory that we will need.
 We will have to allocate memory in our program for arrays, strings, numbers, and more.
 However, we won't deal with dynamically allocating memory (such as with `malloc`)
 or anything like that. We will just bake the memory we need into the executable program
-itself through the equivalents of global variables.
+itself through the assembly equivalent of global variables.
 
 We can allocate strings and numbers in NASM using the following syntax,
 
 ```nasm
 hello_world db "Hello, world!", 0
-the_key     db 42
-big_num     dd 0xdeadbeef
+life        db 42
+integer     dd 0xdeadbeef
 ```
 
 This generalizes to the following: `[name] d[memory size] [value]`.
 
 You might be asking what that `[memory size]` part means. That just means the number of bytes
-to allocate. Bytes in collections of sizes power of 2 have special names, such as,
-* `byte` : 1 byte
+to allocate. Bytes in collections of sizes of powers of 2 have special names, such as the following:
+* `byte` : 1 byte / 8 bits
 * `word` : 2 bytes
 * `doubleword` : 4 bytes
 * `quadword` : 8 bytes
@@ -261,7 +288,7 @@ To shorten their names, doublewords and quadwords are often referred to as `dwor
 respectively.
 
 Thus, the `dd` in the code sample above means a `dword`, or 4 bytes of memory, should
-be allocated for `big_num`.
+be allocated for `integer`.
 
 ## Sections
 
@@ -283,8 +310,8 @@ We will be using the following sections:
         and `rodata` sections. You don't have to worry too much about what this
         means.
     * This section is typically used for global arrays and other large contiguous
-        data structures in memory.
-* `text` : actual code that is executed during runtime
+        data structures in memory that don't have a predefined value at compile time.
+* `text` : code that is executed during runtime
 
 You can think of the `rodata` section as storing global, constant variables;
 the `data` section as storing ordinary global variables, and the `bss` section
@@ -307,7 +334,7 @@ the skeleton of an assembly program.
 ```nasm
 ; soln.asm
 
-; tell nasm that we are writing a 64bit program
+; tell nasm that we are writing a 64 bit program
 bits 64
 
 ; read only data
@@ -393,10 +420,11 @@ up all the object files and executables, with `make`:
 $ make
 $ make clean
 ```
-# Solving the AOC Day 1 Part 1 Challenge in Assembly
+
+# Solving the AOC Day 1 Part 01 Challenge in Assembly
 
 Now that we have a working skeleton for our program, let us examine the
-Advent of Code Day 1 Part 01 challenge:
+[Advent of Code Day 1](https://adventofcode.com/2020/day/1) Part 01 challenge:
 
 > Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.
 > For example, suppose your expense report contained the following:
@@ -433,6 +461,10 @@ First, let's copy the numbers into a text file.
 1521
 ...
 ```
+
+If you're following along, you can either get [your input from the AOC website](https://adventofcode.com/2020/day/1)
+or you can copy mine from my
+[solution repository](https://github.com/alidiusk/aoc2020-asm/blob/master/day01/input.txt).
 
 ## Reading from the file
 
@@ -572,7 +604,7 @@ registers for the first four arguments, which will suffice for our purposes.
 
 Additionally, when writing assembly, it is wise to write extensive documentation
 for each function. Assembly is difficult to understand as it is; without extensive
-documentation and comments, it is virtually impossible to parse.
+documentation and comments, it is virtually impossible for humans to parse.
 
 ```nasm
 ; soln.asm
@@ -587,15 +619,16 @@ main:
     leave
     ret
 
-; Interprets a string and returns its content as an integral number.
+; Interprets a string and returns its content as a positive integral number.
 ; NOTE: the string should contain only ASCII digits and be null terminated.
 ; NOTE: this assumes *little endian* format.
+; NOTE: this function does not handle negative integers.
 ;
 ; Parameters:
 ;   * `rdi` : pointer to the start of the string
 ;
 ; Returns:
-;   * `rax` : 8 byte parsed integer
+;   * `rax` : 8 byte integer
 atoi:
     ; set up the stack frame
     push rbp
@@ -634,20 +667,21 @@ atoi:
 
 Now that we can parse strings into integers, let us map the string of numbers
 to an integer array. Even though our `atoi` implementation returns an 8 byte `long`,
-we will treat all of the numbers as 4 byte `int`s, as they are quite small and it
+we will treat all of the numbers as 4 byte integers, as they are quite small and it
 saves memory.
 
 We will need to add a new global variable for the integer array and its size, and
 then implement a loop in `main` to grab a substring for each number, parse it
 into an integer with `atoi`, and then add it to the array.
 
-We will push each byte to a character array buffer, then parse it into an
-integer with `atoi`. You could use push each character to the stack and
+To grab the substring for each number, we will use a character array buffer.
+We will push each byte of the substring to this buffer, then parse it into an
+integer with `atoi`. You could push each character to the stack and
 call `atoi` with a pointer to the string on the stack, but I have not
-explained the stack in this post, and so we won't do that.
+explained the stack in this post, so we won't do that here.
 
-Remember to comment out the old debug printing code at the end of the last
-code segment.
+Remember to comment out the old debug printing code for printing out
+`inputbuffer`.
 
 ```nasm
 ; soln.asm
@@ -670,12 +704,13 @@ section .bss
 
 section .text
     global main
+    global atoi
 
 main:
     ; ...
 
-    ; Old debug print code that printed the inputbuffer to stdout
-    ; comment this out for now
+    ; Old debug print code that printed the inputbuffer to stdout.
+    ; Comment this out for now
     ;
     ; mov rax, NR_WRITE
     ; mov rdi, STDOUT
@@ -726,14 +761,12 @@ main:
     ; ...
 ```
 
-Make sure to comment out the old debug code.
-
 If you assemble this code and run it, it will spit out a bunch of garbage
 to your terminal and may mess up the formatting. You can fix your terminal
 by pressing `Ctrl-C` and then typing `reset`. The reason that this output
 is garbage is that the program is printing the raw integers to `stdout`;
-it is *not printing in ASCII*. Your terminal attempts to print these bytes,
-but they just translate to weird symbols.
+it is not printing *ASCII encoded characters*. Your terminal attempts
+to print these bytes, but they just translate to weird symbols.
 
 To check that the output is correct, pipe the program output to a file
 and then examine the hexdump as so:
@@ -758,7 +791,7 @@ $ python -c "print 0x05d2"
 
 Every 4 bytes represents a 4 byte number in little endian format. That is,
 the first 4 bytes `5e 06 00 00` translates to the 4 byte number `0x0000065e`.
-We can use Python to print these numbers are in decimal and compare them
+We can use Python to print these numbers in decimal and compare them
 to the numbers in the `input.txt` file. You can verify that these two
 numbers are the 1st and 32nd numbers in the `input.txt` file, respectively.
 Feel free to check that more numbers match if you like.
@@ -782,20 +815,23 @@ recalculate their initial substring index in our `inputbuffer`. Luckily,
 the format string to our `.data` section and write `extern printf` to
 import the function.
 
-Remember to comment out the old debug printing code from before.
+Remember to comment out the old debug printing code for printing out
+`intarray`.
 
 ```nasm
 ; soln.asm
 
 section .data
-    ; ...
     foundpairstr   db "Found pair: %d * %d = %d", 10, 0
+    ; ...
 
 ; ...
 
 section .text
     extern printf
+
     global main
+    global atoi
 
 main:
     ; ...
@@ -837,6 +873,8 @@ main:
     imul ecx, edx               ; Multiply by edx to get their product
     xor rax, rax                ; Clear rax (required by printf)
     call printf                 ; Call printf
+
+    ; ...
 ```
 
 Note that we have to multiply the indices stored in `r12` and `r13` by 4 to
@@ -846,8 +884,13 @@ such as `eax`, `esi`, `edx`, and `ecx` above. Furthermore, when doing this,
 we must make sure that the upper 4 bytes of the register do not impact our
 results. We do not clear `rax` before our loop because we only ever work
 with `eax` and thus never access the upper 4 bytes; however, in our printing
-code, we must clear the 64bit registers before moving the numbers into their
+code, we must clear the 64 bit registers before moving the numbers into their
 lower 4 bytes so that the numbers we pass to `printf` are correct.
+
+If your program doesn't print anything out, try placing `foundpairstr` at
+the start of your `.data` section. I found that if I placed it last, the
+`printf` call would not work. I am not sure why this is; if you have any idea,
+let me know!
 
 # Conclusion
 

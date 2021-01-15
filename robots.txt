@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://alidiusk.github.io/sitemap.xml

@@ -147,7 +147,7 @@ size in the form `mov [dest] [src]`.
 
 ### Syntax
 
-As a quickaside, I will mention that the assembly *syntax* we are using is only one of many. In
+As a quick aside, I will mention that the assembly *syntax* we are using is only one of many. In
 other syntaxes, such at AT&T syntax, the `mov` instruction would be of form `mov [src] [dest]`.
 
 We are using the NASM assembly syntax because it is simple and easy to read. Intel syntax is also
@@ -182,7 +182,7 @@ that we will make use of:
 * `jne [label]` : jump to a given label if the `NE` (not equal) flag is set
 * `call [label]` : call a function called `label`
 * `syscall` : Perform a `syscall`.
-    * We will discuss what a syscall is later.
+    * We will discuss what a `syscall` is later.
 
 ### Flags
 
@@ -242,20 +242,20 @@ work with the operating system. Whenever you open a file in a higher level langu
 ultimately interfacing with the operating system in this way.
 
 As we are working with Linux in our code, we will use the *system call* interface. This is
-ultimately rather simmple. We will just have to move some data into specific registers
+ultimately rather simple. We will just have to move some data into specific registers
 to tell the Linux kernel what operation we want to perform, as well as supply data
 to perform that operation, and then we use the `syscall` instruction.
 
-Each syscall has a corresponding number. The ones that we will use are:
+Each system call has a corresponding number. The ones that we will use are:
 * `read` -- 0 : read from a file
 * `write` -- 1 : write to a file
 * `open` -- 2 : open a file
 * `close` -- 3 : close a file
 
-We move the number of the syscall into `rax`, move other arguments into other specified
+We move the number of the system call into `rax`, move other arguments into other specified
 registers, and then use `syscall` to perform the operation.
 
-Think of a syscall as a function -- just a special function that the Linux kernel executes.
+Think of a `syscall` as a function -- just a special function that the Linux kernel executes.
 
 ## Memory
 
@@ -303,7 +303,7 @@ accordingly.
 
 We will be using the following sections:
 * `rodata` : read only memory
-* `data` : read and writeable memory
+* `data` : read and writable memory
 * `bss` : memory allocated upon program execution
     * The Linux kernel allocates this memory when we run the process, but the
         values aren't actually stored in the executable file as in the `data`
@@ -316,7 +316,7 @@ We will be using the following sections:
 You can think of the `rodata` section as storing global, constant variables;
 the `data` section as storing ordinary global variables, and the `bss` section
 as storing global arrays with uninitialized memory at the start of program
-exeuction.
+execution.
 
 # Writing Assembly
 
@@ -470,7 +470,7 @@ or you can copy mine from my
 
 Our next job is to open the file and read the data into a buffer.
 This will require us to first allocate a sufficiently long buffer, and then
-perform the two syscalls to open the file and then read from it.
+perform the two system calls to open the file and then read from it.
 
 ```nasm
 ; soln.asm

@@ -5,7 +5,7 @@ date = 2021-01-14
 
 # Hi, I'm Liam Woodward.
 
-I'm currently a freshman at the University of Pittsburgh.
+I'm currently a junior at the University of Pittsburgh.
 I'm majoring in Computer Science and planning to minor in Mathematics.
 I enjoy reading, beekeeping, music, singing, walking, and high quality coffee.
 

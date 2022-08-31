@@ -5,8 +5,9 @@ date = 2022-08-31
 
 # Hi, I'm Maya Woodward.
 
-I'm currently a junior at the University of Pittsburgh.
-I'm majoring in Computer Science and planning to minor in Mathematics.
+I'm currently a senior at the University of Pittsburgh.
+I'm pursuing my B.S. and M.S. in Computer Science. 
+I expect to finish the former May 2023 and the latter May 2024.
 I enjoy reading, beekeeping, music, singing, walking, and high quality coffee.
 
 I write a little bit. You can find my posts [here](@/posts/_index.md).

@@ -912,4 +912,4 @@ Joe Van Hoey
 If you have any questions, problems, or feedback while following this
 article, feel free to create an  [issue](https://github.com/alidiusk/aoc2020-asm/issues)
 on my [solutions repository](https://github.com/alidiusk/aoc2020-asm) or
-[email me](emailto:liamowoodward@gmail.com) directly.
+[email me](emailto:mayawoodward0@gmail.com) directly.

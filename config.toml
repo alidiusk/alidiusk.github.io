@@ -1,7 +1,7 @@
 title = "Alidiusk"
 base_url = "https://alidiusk.github.io/"
 # base_url = "127.0.0.1"
-description = "Liam Woodward's personal website and blog"
+description = "Maya Woodward's personal website and blog"
 
 generate_feed = true
 feed_filename = "rss.xml"
@@ -38,8 +38,8 @@ navbar_items = [
 ]
 
 [extra.author]
-name = "Liam Woodward"
-email = "liamowoodward@gmail.com"
+name = "Maya Woodward"
+email = "mayawoodward0@gmail.com"
 
 [extra.social]
 github = "alidiusk"

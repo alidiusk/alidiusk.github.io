@@ -1,9 +1,9 @@
 +++
 title = "Alidiusk"
-date = 2021-01-14
+date = 2022-08-31
 +++
 
-# Hi, I'm Liam Woodward.
+# Hi, I'm Maya Woodward.
 
 I'm currently a junior at the University of Pittsburgh.
 I'm majoring in Computer Science and planning to minor in Mathematics.

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>Alidiusk - assembly</title>
+        <link>https://alidiusk.github.io/</link>
+        <description>Maya Woodward&#x27;s personal website and blog</description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https://alidiusk.github.io/tags/assembly/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Thu, 14 Jan 2021 00:00:00 +0000</lastBuildDate>
+        <item>
+            <title>Completing Advent of Code 2020 Day 1 in x86-64 Assembly</title>
+            <pubDate>Thu, 14 Jan 2021 00:00:00 +0000</pubDate>
+            <link>https://alidiusk.github.io/posts/aoc2020-asm/</link>
+            <guid>https://alidiusk.github.io/posts/aoc2020-asm/</guid>
+            <description>&lt;p&gt;I think the Advent of Code challenges are a wonderful opportunity to experiment with new programming languages.
+As I have been trying to learn more about operating systems and the low level operations of computers, I thought
+it would be an interesting exercise to try to complete some of the Advent of Code 2020 challenges in x86-64
+assembly on Linux.&lt;&#x2F;p&gt;
+</description>
+        </item>
+    </channel>
+</rss>

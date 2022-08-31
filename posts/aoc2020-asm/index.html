@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <meta content="#ffffff" name="theme-color" />
+  <meta content="#da532c" name="msapplication-TileColor" />
+
+  
+  
+  
+  
+  
+
+  <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/themes/folio/galleria.folio.min.css"
+    rel="stylesheet" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+  <link href='https://alidiusk.github.io/site.css' rel="stylesheet" />
+
+  
+  
+
+  <title>
+    
+Alidiusk | Completing Advent of Code 2020 Day 1 in x86-64 Assembly
+
+  </title>
+
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/201b8d5e05.js"></script>
+
+  
+</head>
+
+<body class="has-background-white">
+  
+  <nav aria-label="section navigation" class="navbar is-light" role="navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item has-text-weight-bold" href="/">Alidiusk</a>
+        <a aria-expanded="false" aria-label="menu" class="navbar-burger burger" data-target="navMenu" role="button">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-end has-text-centered">
+          
+          <a class="navbar-item" href='https:&#x2F;&#x2F;alidiusk.github.io&#x2F;&#x2F;'>
+            Home
+          </a>
+          
+          <a class="navbar-item" href='https:&#x2F;&#x2F;alidiusk.github.io&#x2F;&#x2F;posts'>
+            Posts
+          </a>
+          
+          <a class="navbar-item" href='https:&#x2F;&#x2F;alidiusk.github.io&#x2F;&#x2F;tags'>
+            Tags
+          </a>
+          
+          <a class="navbar-item" href='https:&#x2F;&#x2F;alidiusk.github.io&#x2F;&#x2F;categories'>
+            Categories
+          </a>
+          
+          <a class="navbar-item" href='https:&#x2F;&#x2F;alidiusk.github.io&#x2F;&#x2F;contact'>
+            Contact
+          </a>
+          
+          <a class="navbar-item" id="nav-search" title="Search" data-target="#search-modal">
+            <span class="icon">
+              <i class="fas fa-search"></i>
+            </span>
+          </a>
+          <a class="navbar-item" id="dark-mode" title="Switch to dark theme">
+            <span class="icon">
+              <i class="fas fa-adjust"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+
+  
+  
+
+  
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-10 is-offset-1">
+        <article class="box">
+          <h1 class="title is-1">
+              Completing Advent of Code 2020 Day 1 in x86-64 Assembly
+          </h1>
+          <p class="subtitle"></p>
+          <div class="columns is-multiline is-gapless">
+            <div class="column is-8">
+              
+  <p class="has-text-grey">
+    <span class="icon">
+      <i class="fas fa-user"></i>
+    </span>
+    Maya Woodward published on
+    <span class="icon">
+      <i class="far fa-calendar-alt"></i>
+    </span>
+    <time datetime='2021-01-14'>January 14, 2021</time>
+  </p>
+
+            </div>
+            <div class="column is-4 has-text-right-desktop">
+              
+  <p class="has-text-grey">
+    <span class="icon">
+      <i class="far fa-clock"></i>
+    </span>
+    30 min,
+    <span class="icon">
+      <i class="fas fa-pencil-alt"></i>
+    </span>
+    5926 words
+  </p>
+
+            </div>
+            <div class="column">
+              
+              
+  <p>
+    <span class="has-text-black has-text-weight-normal">Categories:</span>
+    
+      <a class="link has-text-weight-light" href='https://alidiusk.github.io/categories/programming/'>
+        <span class="icon is-small">
+          <i class="fas fa-folder fa-xs"></i>
+        </span>
+        Programming
+      </a>
+    
+  </p>
+
+              
+            </div>
+            <div class="column has-text-right-desktop">
+              
+              
+  <p>
+    <span class="has-text-black has-text-weight-normal">Tags:</span>
+    
+      <a class="link has-text-weight-light" href='https://alidiusk.github.io/tags/assembly/'>
+        <span class="icon is-small">
+          <i class="fas fa-tag fa-xs"></i>
+        </span>
+        assembly
+      </a>
+    
+      <a class="link has-text-weight-light" href='https://alidiusk.github.io/tags/linux/'>
+        <span class="icon is-small">
+          <i class="fas fa-tag fa-xs"></i>
+        </span>
+        linux
+      </a>
+    
+      <a class="link has-text-weight-light" href='https://alidiusk.github.io/tags/aoc/'>
+        <span class="icon is-small">
+          <i class="fas fa-tag fa-xs"></i>
+        </span>
+        aoc
+      </a>
+    
+  </p>
+
+              
+            </div>
+          </div>
+          <div class="content mt-2">
+            <p>I think the Advent of Code challenges are a wonderful opportunity to experiment with new programming languages.
+As I have been trying to learn more about operating systems and the low level operations of computers, I thought
+it would be an interesting exercise to try to complete some of the Advent of Code 2020 challenges in x86-64
+assembly on Linux.</p>
+<span id="continue-reading"></span><h1 id="preface">Preface</h1>
+<p>I will be going through my assembly solution to the Advent of Code 2020 Day 01 challenge.
+Along the way, I will attempt to explain what assembly is, why it is important, and how the code works.</p>
+<p>I expect that you will already have some experience with programming. This doesn't have to be low level
+programming or assembly or anything like that, although that would help tremendously. If you have a decent
+amount of experience in programming languages such as Python or Javascript, you may have to follow along
+slowly, but you should hopefully be able to understand the code.</p>
+<p>If you would like to follow along with me, you will need</p>
+<ul>
+<li>the <a href="https://www.nasm.us/">nasm</a> x86 assembler</li>
+<li>the <a href="https://gcc.gnu.org/">gcc</a> compiler</li>
+<li>the <a href="https://www.gnu.org/software/make/manual/make.html">make</a> build tool</li>
+</ul>
+<p>I leave the installation of these tools to you.</p>
+<h2 id="gdb">GDB</h2>
+<p>While optional, I would recommend you also install the <code>gdb</code> debugger. This was invaluable to me when
+writing this post, as my code would frequently crash or justs not work. Using <code>gdb</code> is outside
+the scope of this post, but there are plenty of guides online. If you do decide to use <code>gdb</code>, I would
+recommending using <code>layout asm</code>, <code>layout regs</code>, and <code>set disassembly-flavor intel</code>; this will display
+the register values and assembly code in Intel syntax in separate windows. You may find it annoying
+to type these commands in at the start of every debugging session, in which case you can copy
+the following into <code>.gdbinit</code> in your home directory:</p>
+<pre data-lang="gdb" style="background-color:#2b303b;color:#c0c5ce;" class="language-gdb "><code class="language-gdb" data-lang="gdb"><span>set auto-load safe-path /
+</span><span>
+</span><span>set disassembly-flavor intel
+</span><span>
+</span><span>layout regs
+</span><span>layout asm
+</span></code></pre>
+<h1 id="introduction">Introduction</h1>
+<p>To execute a program, your CPU accepts machine code instructions. These are raw bytes that instruct the
+CPU to perform one of the low level operations it knows how to do -- such as access memory, perform
+basic arithmetic, move data into registers, etc.</p>
+<p>While programmers did write raw machine code in some of the earliest days in computing, almost no one
+writes raw machine code today. Machine code is incredibly difficult for humans to read, write, and understand
+because it is merely a sequence of numbers encoded in binary that is sent to the CPU. Imagine encoding the
+English alphabet with the numbers 1-26 and trying to write a paper using those numbers in place of letters.
+While it is possible, it would take an exorbitant amount of time and likely be fraught with errors.</p>
+<p>These early computer scientists soon developed <em>assembly</em> as an abstraction on top of machine code. Instead
+of writing the sequence of numbers that would encode machine code instructions, code would be written with
+text that humans could better read and understand. Each line would encode one instruction and any arguments
+that instruction would accept. Labels were also added so that code could refer to certain parts of the program
+in a simple way, allowing programmers to more easily implement loops, functions, conditional statements, etc.</p>
+<p>However, assembly cannot be executed by the CPU -- the CPU can only execute machine code. Thus, assembly must
+be <em>assembled</em> into machine code by an assembler. An assembler is essentially a compiler from assembly to
+machine code. This machine code can then be sent to the CPU and executed.</p>
+<p>As assembly is only a light abstraction over machine code, it is highly processor-specific and low level.
+That means that assembly code must take certain features of the CPU into account to work properly,
+such as the architecture, registers, addressing modes, data types, and more.</p>
+<p>We will be writing code for the x86 architecture, targeting CPUs with 64 bit registers. This is usually succinctly
+described as x86-64 assembly code.</p>
+<p>Furthermore, as we are not writing assembly for a bare metal application, we rely on interfacing with the operating
+system to perform many operations, such as opening, reading from, writing to, and closing files. The interface to
+perform these operations through the operating system are operating system specific, so we will be targeting Linux
+in this article.</p>
+<h1 id="assembly-basics">Assembly Basics</h1>
+<p>We will first review some preliminary aspects of assembly code that are required to read or write any assembly.</p>
+<h2 id="registers">Registers</h2>
+<p>Much of assembly code performs operations with registers. Registers are small memory locations within the CPU that
+store the data that the CPU performs operations on. For instance, when performing an add operation, one of the
+operands must be CPU register that the CPU will save the final sum to.</p>
+<p>CPU registers are typically either 8 bit, 16 bit, 32 bit, or 64 bit. Most modern desktop processors today are 64 bit,
+and as stated before, we are writing 64 bit assembly code.</p>
+<p>These registers are all referred to with special, and somewhat confusing, names in assembly code.</p>
+<p>The table <a href="https://www.cs.uaf.edu/2017/fall/cs301/lecture/09_11_registers.html">here</a> lists all of the
+x86-64 registers.</p>
+<p>Note that although these registers are 64 bit, you can specifically access smaller portions of the registers.
+For example, here are all of the subparts of the 64 bit <code>rax</code> register:</p>
+<ul>
+<li><code>rax</code> : the full 64 bit register</li>
+<li><code>eax</code> : the lower 32 bits of <code>rax</code></li>
+<li><code>ax</code> : the lowest 16 bits of <code>rax</code></li>
+<li><code>ah</code> : the upper 8 bits of <code>ax</code></li>
+<li><code>al</code> : the lower 8 bits of <code>ax</code> / the lowest 8 bits of <code>rax</code>
+You can find all of these names, as well as the names of the other registers, in the link above.</li>
+</ul>
+<p>Note that you cannot access the highest 32 bits of <code>rax</code> nor the highest 16 bits of <code>eax</code> directly.
+You can compute their values using bit operations, but their values cannot be accessed directly.</p>
+<p>We can move data into registers with the <code>mov</code> class of instructions.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">0xdeadbeef</span><span style="color:#65737e;"> ; move the number 0xdeadbeef into rax
+</span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">eax</span><span>, </span><span style="color:#d08770;">42</span><span style="color:#65737e;">         ; move the number 42 into eax, the lower 32 bits of rax
+</span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">ax</span><span>, </span><span style="color:#d08770;">0xff</span><span style="color:#65737e;">        ; move the number 0xff into ax, the lowest 16 bits of rax
+</span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">ah</span><span>, </span><span style="color:#d08770;">0xf</span><span style="color:#65737e;">         ; move the number 0xf into ah, the high 8 bits of ax
+</span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">al</span><span>, </span><span style="color:#d08770;">0xa</span><span style="color:#65737e;">         ; move the number 0xa into al, the low 8 bits of ax
+</span></code></pre>
+<h2 id="instructions">Instructions</h2>
+<p>We should now discuss instructions.</p>
+<p>Every line of an assembly program encodes exactly one assembly instruction. An instruction is an
+one operation that a CPU executes. Most instructions additionally take one or more <em>operands</em>,
+which are arguments that specify the operation of the instruction. For instance, the <code>mov</code>
+instruction showed above takes a register as its first operand and a number as its second operand.
+This encodes the operation of moving the number into the register. There are different forms of
+many instructions, however, that accept different operands; for instance, each line above is a
+different form of <code>mov</code>, as it accepts a different size of register. This means that the machine
+code number of the <code>mov</code> instruction is different on each line. Thus, each form of an instruction
+is encoded by a different number in machine code.</p>
+<p>We do not have to worry too much about the different forms of instructions and their machine
+code numbers to write simple assembly code, thankfully. Just be aware that there are many assembly
+instructions and each instruction can take none, one, or more operands.</p>
+<p>The <code>mov</code> instruction discussed above, generally, moves data from a source to a destination of equal
+size in the form <code>mov [dest] [src]</code>.</p>
+<h3 id="syntax">Syntax</h3>
+<p>As a quick aside, I will mention that the assembly <em>syntax</em> we are using is only one of many. In
+other syntaxes, such at AT&amp;T syntax, the <code>mov</code> instruction would be of form <code>mov [src] [dest]</code>.</p>
+<p>We are using the NASM assembly syntax because it is simple and easy to read. Intel syntax is also
+very common and looks fairly similar to NASM syntax. AT&amp;T syntax is very common as well, but
+it looks very different from NASM syntax and personally, I find it to be very noisy and difficult
+to read.</p>
+<p>Most handwritten assembly nowadays seems to use NASM syntax and the NASM assembler, as we are using.</p>
+<h3 id="more-instructions">More Instructions</h3>
+<p>Now that we know what an instruction is, let us look at some common and useful assembly instructions
+that we will make use of:</p>
+<ul>
+<li><code>mov [dest] [src]</code> : move data from the source to the destination</li>
+<li><code>lea [dest] [mem]</code> : loads a memory address into the destination register</li>
+<li><code>xor [src] [dest]</code> : xor the data in the <code>src</code> register with the value given as <code>dest</code></li>
+<li><code>add [dest] [src]</code> : add the number, register, or number in memory to the destination register</li>
+<li><code>sub [dest] [src]</code> : subtract the number, register, or number in memory from the destination register</li>
+<li><code>imul [src]</code> : do a signed multiplication between <code>rax</code> and the <code>src</code> register.
+<ul>
+<li>Note that there are other forms of <code>imul</code> for smaller register sizes; if you use a 32 bit,
+16 bit, or 8 bit register as the <code>src</code>, then the corresponding size of the <code>rax</code> register
+will be used in the signed multiplication</li>
+</ul>
+</li>
+<li><code>mul [src]</code> : do an unsigned multiplication between <code>rax</code> and the <code>src</code> register
+<ul>
+<li>The size correspondence as explained right above also applies here</li>
+</ul>
+</li>
+<li><code>cmp [src] [dest]</code> : compare the value in the <code>src</code> register to the value given in <code>dest</code> and
+set the corresponding flags
+<ul>
+<li>We will discuss flags in the next subsection.</li>
+</ul>
+</li>
+<li><code>jmp [label]</code> : unconditionally jump to the given label</li>
+<li><code>jl [label]</code> : jump to a given label if the <code>B</code> (below) flag is set</li>
+<li><code>jg [label]</code> : jump to a given label if the <code>A</code> (above) flag is set</li>
+<li><code>je [label]</code> : jump to a given label if the <code>E</code> (equal) flag is set</li>
+<li><code>jne [label]</code> : jump to a given label if the <code>NE</code> (not equal) flag is set</li>
+<li><code>call [label]</code> : call a function called <code>label</code></li>
+<li><code>syscall</code> : Perform a <code>syscall</code>.
+<ul>
+<li>We will discuss what a <code>syscall</code> is later.</li>
+</ul>
+</li>
+</ul>
+<h3 id="flags">Flags</h3>
+<p>When you perform some operations, such as a <code>cmp</code> operation, the CPU will set some flags for you.
+These flags cannot be read or written to directly, but are instead used for control flow with some
+instructions. For instance, most languages have an <code>if</code> statement to select between two
+code branches to execute depending on some condition. The following Python code,</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span>a = </span><span style="color:#d08770;">2
+</span><span style="color:#b48ead;">if </span><span>a &gt; </span><span style="color:#d08770;">1</span><span>:
+</span><span>    a += </span><span style="color:#d08770;">1
+</span><span style="color:#b48ead;">else</span><span>:
+</span><span>    a -=</span><span style="color:#d08770;">1
+</span></code></pre>
+<p>would translate to the following assembly,</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">2</span><span style="color:#65737e;">      ; move the number 2 into rax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">1</span><span style="color:#65737e;">      ; compare the values of rax and 1
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jle </span><span style="color:#8fa1b3;">sub_one</span><span style="color:#65737e;">     ; if rax is less than or equal to 1, jump to sub_one
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">add </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">1</span><span style="color:#65737e;">      ; add one to rax -- the &#39;if&#39; path
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jmp </span><span style="color:#8fa1b3;">exit</span><span style="color:#65737e;">        ; jump to exit
+</span><span style="color:#8fa1b3;">sub_one:</span><span style="color:#65737e;">            ; the sub_one label
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">sub </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">1</span><span style="color:#65737e;">      ; subtract one from rax -- the &#39;else&#39; path
+</span><span style="color:#8fa1b3;">exit:</span><span style="color:#65737e;">               ; the exit label
+</span></code></pre>
+<p>If <code>rax</code> is less than or equal to <code>1</code>, then the <code>jle [label]</code> will execute and jump to the
+<code>sub_one</code> label. Otherwise, this instruction will be passed over, <code>1</code> will be added to <code>rax</code>,
+and the program will jump to the <code>exit</code> label to skip the subtraction instruction.</p>
+<p>You don't have to worry about what flags there are and how they are set; just treat the
+<code>cmp</code> instruction as a comparison between two numbers, and follow that with whatever
+jump-family instruction corresponds to the comparison you want to make. That is,</p>
+<ul>
+<li><code>jl</code> corresponds to <code>&lt;</code></li>
+<li><code>jle</code> corresponds to <code>&gt;=</code></li>
+<li><code>jg</code> corresponds to <code>&gt;</code></li>
+<li><code>jge</code> corresponds to <code>&gt;=</code></li>
+<li><code>je</code> corresponds to <code>==</code></li>
+<li><code>jne</code> corresponds to <code>!=</code>
+Thus, using the <code>cmp</code> instruction and the jump-family of instructions, you can implement
+conditional control flow to jump to different code branches depending on the value of some
+register.</li>
+</ul>
+<p>There are other jump instructions you can use as well as other instructions that set flags, but
+this subset suffices for our purposes today.</p>
+<h3 id="syscalls">Syscalls</h3>
+<p>I mentioned before that to perform many common operations, such as opening, reading from,
+writing to, and closing files, we will have to interface with the operating system. This is
+because the operating system manages all of the hardware in a computer, including storage, and thus
+the operating system manages the filesystem. Thus, if we want to interact with files, we must
+work with the operating system. Whenever you open a file in a higher level language, it is
+ultimately interfacing with the operating system in this way.</p>
+<p>As we are working with Linux in our code, we will use the <em>system call</em> interface. This is
+ultimately rather simple. We will just have to move some data into specific registers
+to tell the Linux kernel what operation we want to perform, as well as supply data
+to perform that operation, and then we use the <code>syscall</code> instruction.</p>
+<p>Each system call has a corresponding number. The ones that we will use are:</p>
+<ul>
+<li><code>read</code> -- 0 : read from a file</li>
+<li><code>write</code> -- 1 : write to a file</li>
+<li><code>open</code> -- 2 : open a file</li>
+<li><code>close</code> -- 3 : close a file</li>
+</ul>
+<p>We move the number of the system call into <code>rax</code>, move other arguments into other specified
+registers, and then use <code>syscall</code> to perform the operation.</p>
+<p>Think of a <code>syscall</code> as a function -- just a special function that the Linux kernel executes.</p>
+<h2 id="memory">Memory</h2>
+<p>With the basics of assembly instructions out of the way, we will discuss the basics of
+memory that we will need.</p>
+<p>We will have to allocate memory in our program for arrays, strings, numbers, and more.
+However, we won't deal with dynamically allocating memory (such as with <code>malloc</code>)
+or anything like that. We will just bake the memory we need into the executable program
+itself through the assembly equivalent of global variables.</p>
+<p>We can allocate strings and numbers in NASM using the following syntax,</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#8fa1b3;">hello_world </span><span style="color:#96b5b4;">db </span><span style="color:#a3be8c;">&quot;Hello, world!&quot;</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">life        </span><span style="color:#96b5b4;">db </span><span style="color:#d08770;">42
+</span><span style="color:#8fa1b3;">integer     </span><span style="color:#96b5b4;">dd </span><span style="color:#d08770;">0xdeadbeef
+</span></code></pre>
+<p>This generalizes to the following: <code>[name] d[memory size] [value]</code>.</p>
+<p>You might be asking what that <code>[memory size]</code> part means. That just means the number of bytes
+to allocate. Bytes in collections of sizes of powers of 2 have special names, such as the following:</p>
+<ul>
+<li><code>byte</code> : 1 byte / 8 bits</li>
+<li><code>word</code> : 2 bytes</li>
+<li><code>doubleword</code> : 4 bytes</li>
+<li><code>quadword</code> : 8 bytes</li>
+</ul>
+<p>To shorten their names, doublewords and quadwords are often referred to as <code>dword</code> and <code>qword</code>
+respectively.</p>
+<p>Thus, the <code>dd</code> in the code sample above means a <code>dword</code>, or 4 bytes of memory, should
+be allocated for <code>integer</code>.</p>
+<h2 id="sections">Sections</h2>
+<p>We must now discuss sections of an executable program, as we must define these ourselves
+when writing assembly code.</p>
+<p>Sections are parts of an executable that have different purposes. They are separated for
+sake of organization and permission differences when mapped into virtual memory upon
+a program being run. You don't have to worry too much about what that means; just
+know each section has a defined usage, and we have to put our code in each section
+accordingly.</p>
+<p>We will be using the following sections:</p>
+<ul>
+<li><code>rodata</code> : read only memory</li>
+<li><code>data</code> : read and writable memory</li>
+<li><code>bss</code> : memory allocated upon program execution
+<ul>
+<li>The Linux kernel allocates this memory when we run the process, but the
+values aren't actually stored in the executable file as in the <code>data</code>
+and <code>rodata</code> sections. You don't have to worry too much about what this
+means.</li>
+<li>This section is typically used for global arrays and other large contiguous
+data structures in memory that don't have a predefined value at compile time.</li>
+</ul>
+</li>
+<li><code>text</code> : code that is executed during runtime</li>
+</ul>
+<p>You can think of the <code>rodata</code> section as storing global, constant variables;
+the <code>data</code> section as storing ordinary global variables, and the <code>bss</code> section
+as storing global arrays with uninitialized memory at the start of program
+execution.</p>
+<h1 id="writing-assembly">Writing Assembly</h1>
+<p>Whew! That was a lot. You will probably have to refer to the above explanations several
+times while we actually implement the assembly program, and that is perfectly fine!
+Assembly is really complicated and requires a lot of low level knowledge.
+If you already knew very little of the above knowledge, it will probably feel
+overwhelming.</p>
+<h2 id="hello-world">Hello world!</h2>
+<p>We will begin by writing a simple hello world program to demonstrate
+the skeleton of an assembly program.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#65737e;">; soln.asm
+</span><span>
+</span><span style="color:#65737e;">; tell nasm that we are writing a 64 bit program
+</span><span style="color:#96b5b4;">bits 64
+</span><span>
+</span><span style="color:#65737e;">; read only data
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.rodata
+</span><span>
+</span><span style="color:#65737e;">; data
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.data
+</span><span style="color:#65737e;">; Note that the 0 at the end appends a null-byte
+</span><span style="color:#65737e;">; to terminate the string
+</span><span style="color:#8fa1b3;">hello_world </span><span style="color:#96b5b4;">db </span><span style="color:#a3be8c;">&quot;Hello, world!&quot;</span><span>, </span><span style="color:#d08770;">0
+</span><span>
+</span><span style="color:#65737e;">; uninitialized memory
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.bss
+</span><span>
+</span><span style="color:#65737e;">; code
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.text
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">main</span><span style="color:#65737e;">     ; export main
+</span><span>
+</span><span style="color:#65737e;">; our main function
+</span><span style="color:#8fa1b3;">main:
+</span><span style="color:#65737e;">    ; Push the stack pointer. Don&#39;t worry too much about this
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">push </span><span style="color:#bf616a;">rbp
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rbp</span><span>, </span><span style="color:#bf616a;">rsp
+</span><span>
+</span><span style="color:#65737e;">    ; Load the number 1 into rax. This denotes that we want to perform the
+</span><span style="color:#65737e;">    ; WRITE system call.
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">0x1
+</span><span style="color:#65737e;">    ; Move the number 1 into rdi. This denotes the file we want to
+</span><span style="color:#65737e;">    ; write to, and STDOUT has a file descriptor of 1 for (virtually)
+</span><span style="color:#65737e;">    ; all Linux processes
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdi</span><span>, </span><span style="color:#d08770;">0x1
+</span><span style="color:#65737e;">    ; Load the memory address of the hello_world string into rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rsi</span><span>, [</span><span style="color:#8fa1b3;">hello_world</span><span>]
+</span><span style="color:#65737e;">    ; Load the number of bytes we want to write into rdx, which is the length
+</span><span style="color:#65737e;">    ; of our hello world string:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#d08770;">13
+</span><span style="color:#65737e;">    ; Invoke the syscall
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall
+</span><span>
+</span><span style="color:#65737e;">    ; Pop the stack pointer back off and return from the main function.
+</span><span style="color:#65737e;">    ; Don&#39;t worry too much about this.
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">leave
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">ret
+</span></code></pre>
+<p>This is the hello world program in assembly. A little bit longer than in Python, yeah?</p>
+<p>You should have the knowledge required to understand most of the above assembly code,
+though it will likely still be confusing. The only thing I have not explained is the
+stack; that is because the stack is fairly complicated and confusing, and we won't
+be making too much use of it in our code. Just know that the code at the top and
+bottom of functions pertains to maintaining the stack.</p>
+<h2 id="building">Building</h2>
+<p>We will compile this using <code>nasm</code>, <code>gcc</code>, and <code>make</code>. <code>make</code> is an old build tool
+that allows us to set build targets and dependencies in a compact way. Here is
+the Makefile for our project,</p>
+<pre data-lang="make" style="background-color:#2b303b;color:#c0c5ce;" class="language-make "><code class="language-make" data-lang="make"><span style="color:#65737e;"># Our main target is the &#39;soln&#39; executable
+</span><span style="color:#8fa1b3;">all</span><span>: </span><span style="color:#a3be8c;">soln
+</span><span>
+</span><span style="color:#65737e;"># When we have an object file from the assembly, link it with gcc
+</span><span style="color:#65737e;"># We also must turn off the PIE security feature for our code to link
+</span><span style="color:#8fa1b3;">soln</span><span>: </span><span style="color:#a3be8c;">soln.o
+</span><span>    </span><span style="color:#bf616a;">gcc -o $@ $? -no-pie
+</span><span>
+</span><span style="color:#65737e;"># Compile all assembly files into objects files with nasm, and include
+</span><span style="color:#65737e;"># debug information in the dwarf format
+</span><span style="color:#bf616a;">%</span><span style="color:#8fa1b3;">.o</span><span>: </span><span style="color:#bf616a;">%</span><span style="color:#a3be8c;">.asm
+</span><span>    </span><span style="color:#bf616a;">nasm -f</span><span> elf64</span><span style="color:#bf616a;"> -g -F</span><span> dwarf </span><span style="color:#bf616a;">$&lt;
+</span><span>
+</span><span style="color:#65737e;"># A target to delete all of our object files and executables
+</span><span style="color:#8fa1b3;">clean</span><span>:
+</span><span>    </span><span style="color:#bf616a;">rm </span><span>*.o soln
+</span></code></pre>
+<p>We can then build the program in the command line, as well as clean
+up all the object files and executables, with <code>make</code>:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> make
+</span><span style="color:#bf616a;">$</span><span> make clean
+</span></code></pre>
+<h1 id="solving-the-aoc-day-1-part-01-challenge-in-assembly">Solving the AOC Day 1 Part 01 Challenge in Assembly</h1>
+<p>Now that we have a working skeleton for our program, let us examine the
+<a href="https://adventofcode.com/2020/day/1">Advent of Code Day 1</a> Part 01 challenge:</p>
+<blockquote>
+<p>Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.
+For example, suppose your expense report contained the following:</p>
+<p>1721</p>
+<p>979</p>
+<p>366</p>
+<p>299</p>
+<p>675</p>
+<p>1456</p>
+<p>In this list, the two entries that sum to 2020 are 1721 and 299. Multiplying them together produces 1721 * 299 = 514579, so the correct answer is 514579.</p>
+<p>Of course, your expense report is much larger. Find the two entries that sum to 2020; what do you get if you multiply them together?</p>
+</blockquote>
+<p>We are given a list of numbers and told to find the pair that sum to <code>2020</code>. The answer is then
+the product of those two numbers.</p>
+<p>First, let's copy the numbers into a text file.</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span># input.txt
+</span><span>
+</span><span>1630
+</span><span>1801
+</span><span>1917
+</span><span>1958
+</span><span>1953
+</span><span>1521
+</span><span>...
+</span></code></pre>
+<p>If you're following along, you can either get <a href="https://adventofcode.com/2020/day/1">your input from the AOC website</a>
+or you can copy mine from my
+<a href="https://github.com/alidiusk/aoc2020-asm/blob/master/day01/input.txt">solution repository</a>.</p>
+<h2 id="reading-from-the-file">Reading from the file</h2>
+<p>Our next job is to open the file and read the data into a buffer.
+This will require us to first allocate a sufficiently long buffer, and then
+perform the two system calls to open the file and then read from it.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#65737e;">; soln.asm
+</span><span>
+</span><span style="color:#96b5b4;">bits 64
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.rodata
+</span><span style="color:#65737e;">    ; syscall numbers
+</span><span style="color:#8fa1b3;">    NR_READ        </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    NR_WRITE       </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">1
+</span><span style="color:#8fa1b3;">    NR_OPEN        </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">2
+</span><span style="color:#8fa1b3;">    NR_CLOSE       </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">3
+</span><span>
+</span><span style="color:#65737e;">    ; file access modes
+</span><span style="color:#8fa1b3;">    O_RDONLY       </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    O_WRONLY       </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">1
+</span><span style="color:#8fa1b3;">    O_RDWR         </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">2
+</span><span>
+</span><span style="color:#65737e;">    ; default file descriptors
+</span><span style="color:#8fa1b3;">    STDIN          </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    STDOUT         </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">1
+</span><span style="color:#8fa1b3;">    STDERR         </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">2
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.data
+</span><span style="color:#8fa1b3;">    inputfilename  </span><span style="color:#96b5b4;">db </span><span style="color:#a3be8c;">&quot;input.txt&quot;</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    inputfile      </span><span style="color:#96b5b4;">db </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    inputbufferlen </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">1024
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.bss
+</span><span style="color:#65737e;">    ; When we run the program, allocate inputbufferlen
+</span><span style="color:#65737e;">    ; worth of bytes for inputbuffer
+</span><span style="color:#8fa1b3;">    inputbuffer    </span><span style="color:#96b5b4;">resb </span><span style="color:#8fa1b3;">inputbufferlen
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.text
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">main
+</span><span>
+</span><span style="color:#8fa1b3;">main:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">push </span><span style="color:#bf616a;">rbp
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rbp</span><span>, </span><span style="color:#bf616a;">rsp
+</span><span>
+</span><span style="color:#65737e;">    ; open the input file
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_OPEN</span><span style="color:#65737e;">            ; set our syscall to &#39;open&#39;
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">inputfilename</span><span>]</span><span style="color:#65737e;">    ; load the address of the filename
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rsi</span><span>, </span><span style="color:#8fa1b3;">O_RDONLY</span><span style="color:#65737e;">           ; set read only
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall
+</span><span>
+</span><span style="color:#65737e;">    ; if the syscall succeeded, rax will be a positive number
+</span><span style="color:#65737e;">    ; representing the file descriptor. if it failed, it will
+</span><span style="color:#65737e;">    ; be a negative number indicating the error.
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">0</span><span style="color:#65737e;">                  ; compare rax to 0
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jl </span><span style="color:#8fa1b3;">.exit</span><span style="color:#65737e;">                    ; if rax &lt; 0, there was an error, so exit
+</span><span>
+</span><span style="color:#65737e;">    ; read the input file
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span>[</span><span style="color:#8fa1b3;">inputfile</span><span>], </span><span style="color:#bf616a;">rax</span><span style="color:#65737e;">        ; move the file descriptor into the global variable
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">inputfile</span><span>]</span><span style="color:#65737e;">        ; load the file descriptor into rdi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_READ</span><span style="color:#65737e;">            ; set our syscall to &#39;read&#39;
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rsi</span><span>, [</span><span style="color:#8fa1b3;">inputbuffer</span><span>]</span><span style="color:#65737e;">      ; load the address of our buffer into rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#8fa1b3;">inputbufferlen</span><span style="color:#65737e;">     ; load the length of our buffer into rdx
+</span><span style="color:#8fa1b3;">.read:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall</span><span style="color:#65737e;">                     ; read from the file
+</span><span>
+</span><span style="color:#65737e;">    ; if the read succeeded, the number of bytes read will be put into rax
+</span><span style="color:#65737e;">    ; if it failed, rax will hold a negative number
+</span><span style="color:#65737e;">    ; we must check for the error and also continue reading until rax holds
+</span><span style="color:#65737e;">    ; 0, indicating that there are no bytes to read
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jl </span><span style="color:#8fa1b3;">.cleanup</span><span style="color:#65737e;">                 ; if rax &lt; 0, there was an error, so exit
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">je </span><span style="color:#8fa1b3;">.read_done</span><span style="color:#65737e;">               ; if rax == 0, we are done, so stop reading
+</span><span style="color:#65737e;">    ; calculate the next offset in the buffer to read into and adjust the
+</span><span style="color:#65737e;">    ; buffer length accordingly
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">add </span><span style="color:#bf616a;">rsi</span><span>, </span><span style="color:#bf616a;">rax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">sub </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#bf616a;">rax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_READ
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jmp </span><span style="color:#8fa1b3;">.read
+</span><span>
+</span><span style="color:#8fa1b3;">.read_done:
+</span><span style="color:#65737e;">    ; Add a zero to the end of the input from the buffer
+</span><span style="color:#65737e;">    ; to terminate the string
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span>[</span><span style="color:#bf616a;">rsi</span><span>], </span><span style="color:#96b5b4;">byte </span><span style="color:#d08770;">0
+</span><span style="color:#65737e;">    ; calculate the length of the string we read
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#bf616a;">rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">sub </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#8fa1b3;">inputbuffer
+</span><span>
+</span><span style="color:#65737e;">    ; For now, just write the buffer to stdout so we can verify this worked
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_WRITE
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdi</span><span>, </span><span style="color:#8fa1b3;">STDOUT
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rsi</span><span>, [</span><span style="color:#8fa1b3;">inputbuffer</span><span>]
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall
+</span><span>
+</span><span style="color:#8fa1b3;">.cleanup:
+</span><span style="color:#65737e;">    ; we must now close the input file descriptor if we opened it
+</span><span style="color:#65737e;">    ; if it is not 0, then we have opened the file and must close it
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">inputfile</span><span>]
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rdi</span><span>, </span><span style="color:#d08770;">0</span><span style="color:#65737e;">                  ; check if we opened the file
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">je </span><span style="color:#8fa1b3;">.exit</span><span style="color:#65737e;">                    ; if inputfile == 0, we did not
+</span><span style="color:#65737e;">    ; we opened the file, so must close it using the &#39;close&#39; syscall
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_CLOSE</span><span style="color:#65737e;">           ; set our syscall to &#39;close&#39;
+</span><span style="color:#65737e;">    ; note that we already put the file descriptor into rdi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall
+</span><span>
+</span><span style="color:#8fa1b3;">.exit:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">leave
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">ret
+</span></code></pre>
+<p>When you assemble and run this in the terminal, you should see all of the
+numbers in <code>input.txt</code> be printed out to the screen.</p>
+<h2 id="converting-strings-to-integers">Converting strings to integers</h2>
+<p>Now that we have the list of numbers from the file, we have to convert the ASCII
+numbers into their actual numerical values. This will be somewhat involved;
+we are going to have to go byte-by-byte and extract each number into a
+substring, then convert that substring to its numerical value.</p>
+<p>It might be helpful to consult an <a href="http://www.asciitable.com/">ASCII table</a>
+for this step.</p>
+<p>Let us first implement a function to take a string and convert it into a 4 byte
+integer. For those who have experience with C, this is analagous to the <code>atoi</code>
+function in <code>stdlib.h</code>.</p>
+<p>As an aside, it is helpful to know the x86-64 <em>calling convention</em>. This defines
+which registers represent which arguments to a function. The following are the
+registers for the first four arguments, which will suffice for our purposes.</p>
+<ul>
+<li><code>rdi</code> : 1st argument</li>
+<li><code>rsi</code> : 2nd argument</li>
+<li><code>rdx</code> : 3rd argument</li>
+<li><code>rcx</code> : 4th argument</li>
+</ul>
+<p>Additionally, when writing assembly, it is wise to write extensive documentation
+for each function. Assembly is difficult to understand as it is; without extensive
+documentation and comments, it is virtually impossible for humans to parse.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#65737e;">; soln.asm
+</span><span>
+</span><span style="color:#65737e;">; ...
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.text
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">main
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">atoi
+</span><span>
+</span><span style="color:#8fa1b3;">main:
+</span><span style="color:#65737e;">    ; ...
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">leave
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">ret
+</span><span>
+</span><span style="color:#65737e;">; Interprets a string and returns its content as a positive integral number.
+</span><span style="color:#65737e;">; NOTE: the string should contain only ASCII digits and be null terminated.
+</span><span style="color:#65737e;">; NOTE: this assumes *little endian* format.
+</span><span style="color:#65737e;">; NOTE: this function does not handle negative integers.
+</span><span style="color:#65737e;">;
+</span><span style="color:#65737e;">; Parameters:
+</span><span style="color:#65737e;">;   * `rdi` : pointer to the start of the string
+</span><span style="color:#65737e;">;
+</span><span style="color:#65737e;">; Returns:
+</span><span style="color:#65737e;">;   * `rax` : 8 byte integer
+</span><span style="color:#8fa1b3;">atoi:
+</span><span style="color:#65737e;">    ; set up the stack frame
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">push </span><span style="color:#bf616a;">rbp
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rbp</span><span>, </span><span style="color:#bf616a;">rsp
+</span><span>
+</span><span style="color:#65737e;">    ; set rdx and rax to 0
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#bf616a;">rax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#bf616a;">rdx
+</span><span>
+</span><span style="color:#65737e;">; We are going to loop through all of the bytes of the string,
+</span><span style="color:#65737e;">; turn the ASCII digit into a number from 0-9, multiply the
+</span><span style="color:#65737e;">; existing number by 10, and then add it to the total number
+</span><span style="color:#65737e;">;
+</span><span style="color:#65737e;">; We will know to stop looping when the current byte is &#39;0&#39;,
+</span><span style="color:#65737e;">; the null byte terminating the string
+</span><span style="color:#65737e;">;
+</span><span style="color:#65737e;">; This total number will be stored in rax for the duration
+</span><span style="color:#65737e;">; of the loop
+</span><span style="color:#8fa1b3;">.next_byte:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">dl</span><span>, </span><span style="color:#96b5b4;">byte </span><span>[</span><span style="color:#bf616a;">rdi</span><span>]</span><span style="color:#65737e;">          ; Get the next byte
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#d08770;">0</span><span style="color:#65737e;">                  ; If rdx is the null byte, we are done
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">je </span><span style="color:#8fa1b3;">.exit</span><span style="color:#65737e;">                    ; jump to exit
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">sub </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#d08770;">0x30</span><span style="color:#65737e;">               ; subtract 0x30 from the ASCII digit to map it to 0-9
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">imul </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#d08770;">0xa</span><span style="color:#65737e;">               ; multiply the number by 10 to make space in the one&#39;s digit
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">add </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#bf616a;">rdx</span><span style="color:#65737e;">                ; add the digit to the sum
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">rdi</span><span style="color:#65737e;">                     ; increment our byte pointer to the next byte in the string
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jmp </span><span style="color:#8fa1b3;">.next_byte</span><span style="color:#65737e;">              ; loop
+</span><span>
+</span><span style="color:#65737e;">; Upon exit, the 8 byte number is stored in rax
+</span><span style="color:#8fa1b3;">.exit:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">leave
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">ret
+</span></code></pre>
+<h2 id="parsing-the-input-string-into-an-integer-array">Parsing the input string into an integer array</h2>
+<p>Now that we can parse strings into integers, let us map the string of numbers
+to an integer array. Even though our <code>atoi</code> implementation returns an 8 byte <code>long</code>,
+we will treat all of the numbers as 4 byte integers, as they are quite small and it
+saves memory.</p>
+<p>We will need to add a new global variable for the integer array and its size, and
+then implement a loop in <code>main</code> to grab a substring for each number, parse it
+into an integer with <code>atoi</code>, and then add it to the array.</p>
+<p>To grab the substring for each number, we will use a character array buffer.
+We will push each byte of the substring to this buffer, then parse it into an
+integer with <code>atoi</code>. You could push each character to the stack and
+call <code>atoi</code> with a pointer to the string on the stack, but I have not
+explained the stack in this post, so we won't do that here.</p>
+<p>Remember to comment out the old debug printing code for printing out
+<code>inputbuffer</code>.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#65737e;">; soln.asm
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.data
+</span><span style="color:#8fa1b3;">    inputfilename  </span><span style="color:#96b5b4;">db </span><span style="color:#a3be8c;">&quot;input.txt&quot;</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    inputfile      </span><span style="color:#96b5b4;">db </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    inputbufferlen </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">1024
+</span><span style="color:#8fa1b3;">    intarraylen    </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">200
+</span><span style="color:#8fa1b3;">    numberbuflen   </span><span style="color:#96b5b4;">equ </span><span style="color:#d08770;">32
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.bss
+</span><span style="color:#65737e;">    ; When we run the program, allocate inputbufferlen
+</span><span style="color:#65737e;">    ; worth of bytes for inputbuffer
+</span><span style="color:#8fa1b3;">    inputbuffer    </span><span style="color:#96b5b4;">resb </span><span style="color:#8fa1b3;">inputbufferlen
+</span><span style="color:#65737e;">    ; Allocate intarraylen worth of dwords for
+</span><span style="color:#65737e;">    ; our intarray. This allows us to store 200 integers
+</span><span style="color:#8fa1b3;">    intarray       </span><span style="color:#96b5b4;">resd </span><span style="color:#8fa1b3;">intarraylen
+</span><span style="color:#8fa1b3;">    numberbuf      </span><span style="color:#96b5b4;">resb </span><span style="color:#8fa1b3;">numberbuflen
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.text
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">main
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">atoi
+</span><span>
+</span><span style="color:#8fa1b3;">main:
+</span><span style="color:#65737e;">    ; ...
+</span><span>
+</span><span style="color:#65737e;">    ; Old debug print code that printed the inputbuffer to stdout.
+</span><span style="color:#65737e;">    ; Comment this out for now
+</span><span style="color:#65737e;">    ;
+</span><span style="color:#65737e;">    ; mov rax, NR_WRITE
+</span><span style="color:#65737e;">    ; mov rdi, STDOUT
+</span><span style="color:#65737e;">    ; lea rsi, [inputbuffer]
+</span><span style="color:#65737e;">    ; syscall
+</span><span>
+</span><span style="color:#65737e;">    ; Clear rax, rcx, rdx for the integer parsing loop
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#bf616a;">rax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rcx</span><span>, </span><span style="color:#bf616a;">rcx
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rbx</span><span>, </span><span style="color:#bf616a;">rbx
+</span><span>
+</span><span style="color:#65737e;">    ; Load the address of inputbuffer into rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rsi</span><span>, [</span><span style="color:#8fa1b3;">inputbuffer</span><span>]
+</span><span>
+</span><span style="color:#8fa1b3;">.int_parse:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">al</span><span>, </span><span style="color:#96b5b4;">byte </span><span>[</span><span style="color:#bf616a;">rsi</span><span>]</span><span style="color:#65737e;">          ; Get the next byte
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">rsi</span><span style="color:#65737e;">                     ; Increment our inputbuffer string index
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">al</span><span>, </span><span style="color:#d08770;">0xa</span><span style="color:#65737e;">                 ; Check if the byte is a newline; if so, we are done
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">je </span><span style="color:#8fa1b3;">.end_of_num</span><span style="color:#65737e;">              ; gathering the substring
+</span><span>
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span>[</span><span style="color:#8fa1b3;">numberbuf</span><span>+</span><span style="color:#bf616a;">rcx</span><span>], </span><span style="color:#bf616a;">al</span><span style="color:#65737e;">     ; Load the byte into numberbuf at the rcx-th index
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">rcx</span><span style="color:#65737e;">                     ; Increase our numberbuf index
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jmp </span><span style="color:#8fa1b3;">.int_parse</span><span style="color:#65737e;">              ; Loop to next byte
+</span><span>
+</span><span style="color:#8fa1b3;">.end_of_num:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">numberbuf</span><span>]</span><span style="color:#65737e;">        ; Load the address of numberbuf into rdi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">call </span><span style="color:#8fa1b3;">atoi</span><span style="color:#65737e;">                   ; Call the atoi function on our numberbuf string
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span>[</span><span style="color:#8fa1b3;">intarray</span><span>+</span><span style="color:#bf616a;">rbx</span><span>*</span><span style="color:#d08770;">4</span><span>], </span><span style="color:#bf616a;">eax</span><span style="color:#65737e;">   ; Move the parsed number into the array
+</span><span>
+</span><span style="color:#65737e;">    ; Zero out the bytes we used in numberbuf
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#bf616a;">rax</span><span style="color:#65737e;">                ; Clear rax to 0
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">numberbuf</span><span>]</span><span style="color:#65737e;">        ; move the address of numberbuf into rdi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">repe stosb</span><span style="color:#65737e;">                  ; Zero out the first rcx bytes of numberbuf
+</span><span>
+</span><span style="color:#65737e;">    ; Prepare for next loop
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">rbx</span><span style="color:#65737e;">                     ; Increment our intarray index
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rcx</span><span>, </span><span style="color:#bf616a;">rcx</span><span style="color:#65737e;">                ; Clear rcx for next loop
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">rbx</span><span>, </span><span style="color:#8fa1b3;">intarraylen</span><span style="color:#65737e;">        ; Check if we have parsed all of the numbers
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jl </span><span style="color:#8fa1b3;">.int_parse</span><span style="color:#65737e;">               ; If we have not parsed all the numbers, loop
+</span><span>
+</span><span style="color:#65737e;">    ; For now, just write the intarray to stdout to verify this works
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#8fa1b3;">NR_WRITE
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdi</span><span>, </span><span style="color:#8fa1b3;">STDOUT
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rsi</span><span>, [</span><span style="color:#8fa1b3;">intarray</span><span>]
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#8fa1b3;">intarraylen </span><span>* </span><span style="color:#d08770;">4
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">syscall
+</span><span>
+</span><span style="color:#65737e;">    ; ...
+</span></code></pre>
+<p>If you assemble this code and run it, it will spit out a bunch of garbage
+to your terminal and may mess up the formatting. You can fix your terminal
+by pressing <code>Ctrl-C</code> and then typing <code>reset</code>. The reason that this output
+is garbage is that the program is printing the raw integers to <code>stdout</code>;
+it is not printing <em>ASCII encoded characters</em>. Your terminal attempts
+to print these bytes, but they just translate to weird symbols.</p>
+<p>To check that the output is correct, pipe the program output to a file
+and then examine the hexdump as so:</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span> ./soln &gt; bytes
+</span><span style="color:#bf616a;">$</span><span> hd bytes
+</span><span style="color:#bf616a;">00000000</span><span>  5e 06 00 00 09 07 00 00  7d 07 00 00 a6 07 00 00  |</span><span style="color:#bf616a;">^.......</span><span>}</span><span style="color:#bf616a;">.......</span><span>|
+</span><span style="color:#bf616a;">00000010</span><span>  a1 07 00 00 f1 05 00 00  c6 07 00 00 a7 07 00 00  |</span><span style="color:#bf616a;">................</span><span>|
+</span><span style="color:#bf616a;">00000020</span><span>  07 06 00 00 06 07 00 00  7e 02 00 00 db 05 00 00  |</span><span style="color:#bf616a;">........~.......</span><span>|
+</span><span style="color:#bf616a;">00000030</span><span>  b9 07 00 00 99 05 00 00  fc 05 00 00 f4 06 00 00  |</span><span style="color:#bf616a;">................</span><span>|
+</span><span style="color:#bf616a;">00000040</span><span>  17 06 00 00 4a 07 00 00  aa 07 00 00 cf 07 00 00  |</span><span style="color:#bf616a;">....J...........</span><span>|
+</span><span style="color:#bf616a;">00000050</span><span>  57 06 00 00 ec 06 00 00  c2 06 00 00 86 06 00 00  |</span><span style="color:#bf616a;">W...............</span><span>|
+</span><span style="color:#bf616a;">00000060</span><span>  ff 06 00 00 9b 07 00 00  a9 07 00 00 f3 05 00 00  |</span><span style="color:#bf616a;">................</span><span>|
+</span><span style="color:#bf616a;">00000070</span><span>  bf 03 00 00 ce 07 00 00  9d 06 00 00 d2 05 00 00  |</span><span style="color:#bf616a;">................</span><span>|
+</span><span style="color:#65737e;"># ...
+</span><span style="color:#bf616a;">$</span><span> python</span><span style="color:#bf616a;"> -c </span><span>&quot;</span><span style="color:#a3be8c;">print 0x065e</span><span>&quot;
+</span><span style="color:#bf616a;">1630
+</span><span style="color:#bf616a;">$</span><span> python</span><span style="color:#bf616a;"> -c </span><span>&quot;</span><span style="color:#a3be8c;">print 0x05d2</span><span>&quot;
+</span><span style="color:#bf616a;">1490
+</span></code></pre>
+<p>Every 4 bytes represents a 4 byte number in little endian format. That is,
+the first 4 bytes <code>5e 06 00 00</code> translates to the 4 byte number <code>0x0000065e</code>.
+We can use Python to print these numbers in decimal and compare them
+to the numbers in the <code>input.txt</code> file. You can verify that these two
+numbers are the 1st and 32nd numbers in the <code>input.txt</code> file, respectively.
+Feel free to check that more numbers match if you like.</p>
+<h2 id="finding-two-numbers-that-sum-to-2020">Finding two numbers that sum to 2020</h2>
+<p>There are a number of clever ways to find two numbers in the integer array
+that sum to 2020, but for simplicity's sake, we will just bruteforce it with
+the O(n^2) algorithm and try every possible combination.</p>
+<p>To do this, we will have to</p>
+<ol>
+<li>maintain two indices into <code>intarray</code> to get pairs of numbers</li>
+<li>loop through indices starting from the first index to the last index</li>
+<li>increment the first index and repeat until we find a pair that sum to 2020</li>
+<li>exit out of the loop, print the numbers, and print their sum.</li>
+</ol>
+<p>To print their sum, it will be easiest to use the <code>printf</code> function from
+<code>libc</code>. Otherwise, we would have to reconvert our numbers into ASCII or
+recalculate their initial substring index in our <code>inputbuffer</code>. Luckily,
+<code>gcc</code> will automatically link against <code>libc</code>, so we merely have to add
+the format string to our <code>.data</code> section and write <code>extern printf</code> to
+import the function.</p>
+<p>Remember to comment out the old debug printing code for printing out
+<code>intarray</code>.</p>
+<pre data-lang="nasm" style="background-color:#2b303b;color:#c0c5ce;" class="language-nasm "><code class="language-nasm" data-lang="nasm"><span style="color:#65737e;">; soln.asm
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.data
+</span><span style="color:#8fa1b3;">    foundpairstr   </span><span style="color:#96b5b4;">db </span><span style="color:#a3be8c;">&quot;Found pair: %d * %d = %d&quot;</span><span>, </span><span style="color:#d08770;">10</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#65737e;">    ; ...
+</span><span>
+</span><span style="color:#65737e;">; ...
+</span><span>
+</span><span style="color:#96b5b4;">section </span><span style="color:#8fa1b3;">.text
+</span><span>    </span><span style="color:#96b5b4;">extern </span><span style="color:#8fa1b3;">printf
+</span><span>
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">main
+</span><span>    </span><span style="color:#96b5b4;">global </span><span style="color:#8fa1b3;">atoi
+</span><span>
+</span><span style="color:#8fa1b3;">main:
+</span><span style="color:#65737e;">    ; ...
+</span><span>
+</span><span style="color:#65737e;">    ; For now, just write the intarray to stdout to verify this works
+</span><span style="color:#65737e;">    ; mov rax, NR_WRITE
+</span><span style="color:#65737e;">    ; mov rdi, STDOUT
+</span><span style="color:#65737e;">    ; lea rsi, [intarray]
+</span><span style="color:#65737e;">    ; mov rdx, intarraylen * 4
+</span><span style="color:#65737e;">    ; syscall
+</span><span>
+</span><span style="color:#65737e;">    ; Our starting indices into intarray, held in r12 and r13
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">r12</span><span>, </span><span style="color:#d08770;">0
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">r13</span><span>, </span><span style="color:#d08770;">1
+</span><span style="color:#8fa1b3;">.find_pair:
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">eax</span><span>, [</span><span style="color:#8fa1b3;">intarray</span><span>+</span><span style="color:#bf616a;">r12</span><span>*</span><span style="color:#d08770;">4</span><span>]</span><span style="color:#65737e;">   ; Move the first 4 byte number into eax
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">add </span><span style="color:#bf616a;">eax</span><span>, [</span><span style="color:#8fa1b3;">intarray</span><span>+</span><span style="color:#bf616a;">r13</span><span>*</span><span style="color:#d08770;">4</span><span>]</span><span style="color:#65737e;">   ; Add the second number to get the sum
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">eax</span><span>, </span><span style="color:#d08770;">2020</span><span style="color:#65737e;">               ; Check if their sum is 2020
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">je </span><span style="color:#8fa1b3;">.found_pair</span><span style="color:#65737e;">              ; If so, exit the loop
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">r13</span><span style="color:#65737e;">                     ; Increment the inner loop variable
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">cmp </span><span style="color:#bf616a;">r13</span><span>, </span><span style="color:#8fa1b3;">intarraylen</span><span style="color:#65737e;">        ; Check if we just reached the last number
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jne </span><span style="color:#8fa1b3;">.find_pair</span><span style="color:#65737e;">              ; If not, loop
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">r12</span><span style="color:#65737e;">                     ; If so, increment the outer loop variable
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">r13</span><span>, </span><span style="color:#bf616a;">r12</span><span style="color:#65737e;">                ; and set the inner loop variable to be one
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">inc </span><span style="color:#bf616a;">r13</span><span style="color:#65737e;">                     ; one more
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">jmp </span><span style="color:#8fa1b3;">.find_pair</span><span style="color:#65737e;">              ; Loop
+</span><span style="color:#8fa1b3;">.found_pair:
+</span><span style="color:#65737e;">    ; Clear the following registers in case there is
+</span><span style="color:#65737e;">    ; data in the top 32 bits that will change the
+</span><span style="color:#65737e;">    ; numbers we will print
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rsi</span><span>, </span><span style="color:#bf616a;">rsi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rdx</span><span>, </span><span style="color:#bf616a;">rdx
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rcx</span><span>, </span><span style="color:#bf616a;">rcx
+</span><span style="color:#65737e;">    ; We have found the pair, so print them and their product out
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">lea </span><span style="color:#bf616a;">rdi</span><span>, [</span><span style="color:#8fa1b3;">foundpairstr</span><span>]</span><span style="color:#65737e;">     ; Load the address of the string into rdi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">esi</span><span>, [</span><span style="color:#8fa1b3;">intarray</span><span>+</span><span style="color:#bf616a;">r12</span><span>*</span><span style="color:#d08770;">4</span><span>]</span><span style="color:#65737e;">   ; Load the first 4 byte number into esi
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">edx</span><span>, [</span><span style="color:#8fa1b3;">intarray</span><span>+</span><span style="color:#bf616a;">r13</span><span>*</span><span style="color:#d08770;">4</span><span>]</span><span style="color:#65737e;">   ; Load the second 4 byte number into edx
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">mov </span><span style="color:#bf616a;">ecx</span><span>, </span><span style="color:#bf616a;">esi</span><span style="color:#65737e;">                ; Move the first number into ecx
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">imul </span><span style="color:#bf616a;">ecx</span><span>, </span><span style="color:#bf616a;">edx</span><span style="color:#65737e;">               ; Multiply by edx to get their product
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">xor </span><span style="color:#bf616a;">rax</span><span>, </span><span style="color:#bf616a;">rax</span><span style="color:#65737e;">                ; Clear rax (required by printf)
+</span><span style="color:#8fa1b3;">    </span><span style="color:#b48ead;">call </span><span style="color:#8fa1b3;">printf</span><span style="color:#65737e;">                 ; Call printf
+</span><span>
+</span><span style="color:#65737e;">    ; ...
+</span></code></pre>
+<p>Note that we have to multiply the indices stored in <code>r12</code> and <code>r13</code> by 4 to
+get their byte offset in the integer array. Also note that when moving a 4
+byte integer to a register, we must use the 4 byte version of the register;
+such as <code>eax</code>, <code>esi</code>, <code>edx</code>, and <code>ecx</code> above. Furthermore, when doing this,
+we must make sure that the upper 4 bytes of the register do not impact our
+results. We do not clear <code>rax</code> before our loop because we only ever work
+with <code>eax</code> and thus never access the upper 4 bytes; however, in our printing
+code, we must clear the 64 bit registers before moving the numbers into their
+lower 4 bytes so that the numbers we pass to <code>printf</code> are correct.</p>
+<p>If your program doesn't print anything out, try placing <code>foundpairstr</code> at
+the start of your <code>.data</code> section. I found that if I placed it last, the
+<code>printf</code> call would not work. I am not sure why this is; if you have any idea,
+let me know!</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>If you followed along with me, you now have working code to solve the first part
+of the Day 1 AOC challenge. I will leave the second part as an exercise; the code
+is very similar to that of part 1, except that the brute force solution has three
+nested loops instead of two. Because it is so similar, I highly recommend that you
+attempt to complete it yourself as an exercise. If you get stumped or just want the
+solution, you can see my solution <a href="https://github.com/alidiusk/aoc2020-asm/blob/master/day01/soln.asm">here</a>.</p>
+<p>If you are interested in learning more assembly, the following resources were
+incredibly helpful for me in learning the assembly and low level knowledge
+required for this article,</p>
+<ol>
+<li>Assembly Language Step by Step with Linux, Third Edition, by Jeff Duntemann</li>
+<li>Beginnning x86 Assembly Programming: From Novice to AVX Professional, by
+Joe Van Hoey</li>
+<li>The Linux Man Pages</li>
+</ol>
+<p>If you have any questions, problems, or feedback while following this
+article, feel free to create an  <a href="https://github.com/alidiusk/aoc2020-asm/issues">issue</a>
+on my <a href="https://github.com/alidiusk/aoc2020-asm">solutions repository</a> or
+<a href="emailto:mayawoodward0@gmail.com">email me</a> directly.</p>
+
+          </div>
+        </article>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+  
+  <section class="modal" id="search-modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="field">
+        <p class="control has-icons-right">
+          <input class="input" id="search" placeholder="Search this website." type="search" />
+          <span class="icon is-small is-right">
+            <i class="fas fa-search"></i>
+          </span>
+        </p>
+      </div>
+      <div class="search-results">
+        <div class="search-results__items"></div>
+      </div>
+    </div>
+    <button aria-label="close" class="modal-close is-large"></button>
+  </section>
+  
+
+
+  
+ 
+
+
+   
+ 
+
+  
+  <footer class="py-4 has-background-light">
+    <p class="has-text-centered">
+      Built with
+      <span class="icon is-small">
+        <i class="fas fa-code fa-xs"></i>
+      </span>
+      code and
+      <span class="icon is-small">
+        <i class="fas fa-heart fa-xs"></i>
+      </span>
+      love <br /> Powered By
+      <span class="icon is-small">
+        <i class="fas fa-power-off fa-xs"></i>
+      </span>
+      Zola
+    </p>
+  </footer>
+  
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/galleria.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.xkcd@1/dist/chart.xkcd.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.6.1/themes/folio/galleria.folio.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
+  <script src='https://alidiusk.github.io/search_index.en.js'></script>
+  <script src='https://alidiusk.github.io/js/site.js'></script>
+
+   
+
+</body>
+
+</html>
